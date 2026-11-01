@@ -59,7 +59,7 @@ const blocks = [practiceJsonLd(site, { services: serviceLinks, staff: staffLinks
   <body>
     <a class="skip-link" href="#main">Preskoči na sadržaj</a>
     {IS_STATIC_PREVIEW && (
-      <div class="preview-banner" role="note">Pregledna verzija sajta. Online zakazivanje je u ovoj verziji isključeno.</div>
+      <div class="preview-banner" role="region" aria-label="Pregledna verzija">Pregledna verzija sajta. Online zakazivanje je u ovoj verziji isključeno.</div>
     )}
     <Header />
     <main id="main" tabindex="-1">
@@ -70,6 +70,9 @@ const blocks = [practiceJsonLd(site, { services: serviceLinks, staff: staffLinks
     <ConsentBanner />
   </body>
 </html>
+<style is:global>
+  html, body { overflow-x: clip; }
+</style>
 <style>
-  .preview-banner { background: #fef3c7; color: #78350f; text-align: center; padding: 0.5rem 1rem; font-size: var(--step--1); font-weight: 700; }
+  .preview-banner { background: var(--color-notice); color: var(--color-notice-ink); text-align: center; padding: var(--space-xs) var(--space-md); font-size: var(--text-sm); font-weight: var(--weight-strong); }
 </style>

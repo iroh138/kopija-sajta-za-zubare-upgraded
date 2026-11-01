@@ -3,7 +3,6 @@ import { url } from '../lib/url';
 import { getCollection } from 'astro:content';
 import { practice, addressLine, hoursRows } from '../lib/practice';
 import Logo from './Logo.astro';
-import SocialIcons from './SocialIcons.astro';
 
 const services = (await getCollection('services')).sort((a, b) => a.data.order - b.data.order);
 const hours = hoursRows();
@@ -11,32 +10,31 @@ const year = new Date().getFullYear();
 ---
 <footer class="site-footer">
   <div class="container">
-    <a href={url('/')} class="site-footer__logo"><Logo size="lg" /></a>
+    <div class="site-footer__mast">
+      <a href={url('/')} class="site-footer__logo" aria-label={`${practice.name}, početna`}><Logo size="lg" /></a>
+      <p class="site-footer__line">{practice.tagline}</p>
+    </div>
 
     <div class="site-footer__grid">
-      <div class="site-footer__info">
-        <div>
-          <h2 class="site-footer__label">Adresa:</h2>
-          <p><a href={practice.mapsUrl} rel="noopener" data-nap="address">{addressLine()}</a></p>
-        </div>
-        <div>
-          <h2 class="site-footer__label">Radno vreme:</h2>
-          <ul class="hours-list" data-nap="hours">
-            {hours.map((h) => <li>{h.day}: {h.text}</li>)}
-          </ul>
-          {practice.bookingOnly && <p class="muted">Samo uz prethodno zakazivanje.</p>}
-        </div>
-        <div>
-          <h2 class="site-footer__label">Kontakt:</h2>
-          <p>
-            {practice.phone && <><a href={`tel:${practice.phone.e164}`} data-nap="phone">{practice.phone.display}</a><br /></>}
-            <a href={`mailto:${practice.email}`}>{practice.email}</a><br />
-            <a href={url('/zakazivanje')}>Zakazivanje online</a>
-          </p>
-        </div>
-        <SocialIcons />
+      <div>
+        <h2 class="site-footer__label">Adresa</h2>
+        <p><a href={practice.mapsUrl} rel="noopener" data-nap="address">{addressLine()}</a></p>
       </div>
-
+      <div>
+        <h2 class="site-footer__label">Radno vreme</h2>
+        <ul class="hours-list" data-nap="hours">
+          {hours.map((h) => <li><span>{h.day}</span> <span>{h.text}</span></li>)}
+        </ul>
+        {practice.bookingOnly && <p class="muted">Samo uz prethodno zakazivanje.</p>}
+      </div>
+      <div>
+        <h2 class="site-footer__label">Kontakt</h2>
+        <p>
+          {practice.phone && <><a href={`tel:${practice.phone.e164}`} data-nap="phone">{practice.phone.display}</a><br /></>}
+          <a href={`mailto:${practice.email}`}>{practice.email}</a><br />
+          <a href={url('/zakazivanje')}>Zakazivanje online</a>
+        </p>
+      </div>
       <nav class="site-footer__nav" aria-label="Meni u podnožju">
         <ul>
           <li><a href={url('/')}>Početna</a></li>
@@ -52,23 +50,26 @@ const year = new Date().getFullYear();
       </nav>
     </div>
 
-    <p class="site-footer__copy">© {year} {practice.legalName}. Sva prava zadržana.</p>
+    <p class="site-footer__copy">© {year} {practice.legalName}</p>
   </div>
 </footer>
 <style>
-  .site-footer { background: var(--color-tint); border-top: 1px solid var(--color-tint-2); padding-block: var(--space-6) var(--space-3); margin-bottom: 4.75rem; }
-  @media (min-width: 1024px) { .site-footer { margin-bottom: 0; } }
+  /* footer: a mast, the wordmark and the motto over address, hours, contact and the links. */
+  .site-footer { background: var(--color-paper); border-top: var(--rule-hair) solid var(--color-rule); padding-block: var(--section-gap-s) var(--space-xl); margin-bottom: var(--space-3xl); }
+  @media (min-width: 64rem) { .site-footer { margin-bottom: 0; } }
   .site-footer a { color: var(--color-ink); text-decoration: none; }
   .site-footer a:hover { color: var(--color-accent); text-decoration: underline; }
-  .site-footer__logo { display: inline-block; margin-bottom: var(--space-4); }
-  .site-footer__grid { display: grid; gap: var(--space-4); }
-  @media (min-width: 1024px) { .site-footer__grid { grid-template-columns: 1.4fr 1fr; } }
-  .site-footer__info { display: grid; gap: var(--space-3); }
-  .site-footer__info p { margin-bottom: 0; }
-  .site-footer__label { font-size: var(--step-0); font-weight: 600; color: var(--color-ink); margin-bottom: 0.4rem; }
-  .hours-list { list-style: none; padding: 0; margin: 0 0 0.5rem; line-height: 1.9; }
-  .site-footer__nav { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-3); align-content: start; }
+  .site-footer__mast { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-lg); padding-bottom: var(--space-xl); margin-bottom: var(--space-xl); border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .site-footer__logo { display: inline-block; }
+  .site-footer__line { font-size: var(--text-xl); font-weight: 300; color: var(--color-ink-2); max-width: 30ch; }
+  .site-footer__grid { display: grid; gap: var(--space-xl); grid-template-columns: repeat(auto-fit, minmax(min(100%, 14rem), 1fr)); }
+  .site-footer__label { font-family: var(--font-body); font-size: var(--text-sm); font-weight: 400; letter-spacing: 0; color: var(--color-muted); margin-bottom: var(--space-xs); }
+  .hours-list { list-style: none; padding: 0; margin: 0 0 var(--space-xs); font-variant-numeric: tabular-nums; }
+  .hours-list li { display: flex; justify-content: space-between; gap: var(--space-md); max-width: 16rem; padding-block: var(--space-3xs); }
+  .site-footer__nav { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--space-lg); align-content: start; grid-column: span 1; }
+  @media (min-width: 64rem) { .site-footer__nav { grid-column: span 2; } }
   .site-footer__nav ul { list-style: none; padding: 0; margin: 0; }
-  .site-footer__nav a { display: inline-flex; min-height: 44px; align-items: center; }
-  .site-footer__copy { margin-top: var(--space-5); padding-top: var(--space-2); border-top: 1px solid var(--color-divider); font-size: var(--step--1); color: var(--color-muted); max-width: none; }
+  @media (max-width: 30rem) { .site-footer__nav { grid-template-columns: minmax(0, 1fr); } }
+  .site-footer__nav a { display: inline-flex; min-height: 36px; align-items: center; }
+  .site-footer__copy { margin-top: var(--space-2xl); font-size: var(--text-sm); color: var(--color-muted); }
 </style>

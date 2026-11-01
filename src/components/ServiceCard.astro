@@ -6,17 +6,17 @@ const H = headingLevel;
 <article class="card service-card">
   <H class="service-card__title"><a href={href}>{title}</a></H>
   <p>{summary}</p>
-  <span class="service-card__more" aria-hidden="true">Saznajte više →</span>
+  <span class="service-card__more" aria-hidden="true">Detaljnije</span>
 </article>
 <style>
-  .service-card { position: relative; display: flex; flex-direction: column; transition: box-shadow 150ms ease, transform 150ms ease; }
-  .service-card:hover { box-shadow: 0 6px 24px rgb(15 23 42 / 0.12); transform: translateY(-2px); }
-  .service-card__title { font-size: var(--step-1); }
-  .service-card__title a { color: var(--color-text); text-decoration: none; }
+  .service-card { position: relative; display: flex; flex-direction: column; gap: var(--space-xs); padding: var(--space-lg); transition: border-color var(--dur-short) var(--ease-out); }
+  .service-card:hover { border-color: var(--color-ink); }
+  .service-card__title { font-size: var(--text-title); }
+  .service-card__title a { color: var(--color-ink); text-decoration: none; }
   /* Whole card is clickable via the heading link's ::after */
-  .service-card__title a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius); }
+  .service-card__title a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-card); }
   .service-card__title a:focus-visible { outline: none; }
-  .service-card__title a:focus-visible::after { outline: var(--focus-ring); outline-offset: 3px; }
+  .service-card__title a:focus-visible::after { outline: 2px solid var(--color-focus); outline-offset: 3px; }
   .service-card p { color: var(--color-muted); flex: 1; }
-  .service-card__more { font-weight: 700; color: var(--color-primary); }
+  .service-card__more { font-weight: var(--weight-strong); color: var(--color-accent); }
 </style>

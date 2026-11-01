@@ -1,42 +1,52 @@
 ---
-/** Clickable service cards (whole card via the heading link). Used on the home page and on each service page. */
+/**
+ * The services as a menu: one row per service, the name on the left and what it covers on the right.
+ * The whole row is the link (the heading's ::after). `compact` is a two-column list of names, for "other services".
+ */
 import { url } from '../lib/url';
 
 interface Item { id: string; data: { title: string; shortTitle?: string; summary: string } }
-interface Props { items: Item[]; numbered?: boolean; compact?: boolean }
-const { items, numbered = true, compact = false } = Astro.props;
+interface Props { items: Item[]; compact?: boolean; numbered?: boolean }
+const { items, compact = false } = Astro.props;
 ---
-<ul class:list={['svc-grid', { 'svc-grid--compact': compact }]}>
-  {items.map((s, i) => (
-    <li class="svc">
-      {numbered && <span class="svc__num" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>}
-      <h3 class="svc__title"><a href={url(`/usluge/${s.id}`)}>{s.data.shortTitle ?? s.data.title}</a></h3>
-      {!compact && <p>{s.data.summary}</p>}
-      <span class="svc__more" aria-hidden="true">Detaljnije <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
-    </li>
-  ))}
-</ul>
+{compact ? (
+  <ul class="svc-list">
+    {items.map((s) => (
+      <li><a href={url(`/usluge/${s.id}`)}>{s.data.shortTitle ?? s.data.title}</a></li>
+    ))}
+  </ul>
+) : (
+  <ol class="svc-rows">
+    {items.map((s) => (
+      <li class="svc">
+        <h3 class="svc__title"><a href={url(`/usluge/${s.id}`)}>{s.data.shortTitle ?? s.data.title}</a></h3>
+        <p>{s.data.summary}</p>
+      </li>
+    ))}
+  </ol>
+)}
 <style>
-  .svc-grid { list-style: none; padding: 0; margin: 0 0 var(--space-4); display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr)); }
-  .svc-grid--compact { gap: var(--space-2); grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); }
+  .svc-rows { list-style: none; padding: 0; margin: 0; border-top: var(--rule-hair) solid var(--color-rule); counter-reset: svc; }
   .svc {
-    position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: var(--space-3);
-    background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-lg);
-    transition: box-shadow 200ms var(--ease), transform 200ms var(--ease), border-color 200ms var(--ease);
+    position: relative; counter-increment: svc; display: grid; gap: var(--space-xs) var(--gap-columns);
+    padding-block: var(--space-lg); border-bottom: var(--rule-hair) solid var(--color-rule);
+    transition: background-color var(--dur-short) var(--ease-out);
   }
-  .svc-grid--compact .svc { padding: 1.1rem 1.25rem; flex-direction: row; align-items: center; justify-content: space-between; gap: 1rem; }
-  .svc:hover { box-shadow: var(--shadow-hover); transform: translateY(-3px); border-color: var(--color-tint-2); }
-  .svc__num { font-size: var(--step--1); font-weight: 600; letter-spacing: 0.08em; color: var(--color-accent); }
-  .svc__title { font-size: var(--step-1); font-weight: 500; margin: 0; }
-  .svc-grid--compact .svc__title { font-size: 1.1rem; }
+  .svc:hover { background: var(--color-paper-2); }
+  @media (min-width: 60rem) {
+    .svc { grid-template-columns: minmax(0, 1fr) minmax(0, 4fr) minmax(0, 7fr); align-items: baseline; padding-block: var(--space-xl); }
+    .svc::before { content: counter(svc); font-size: var(--text-title); font-weight: 300; color: var(--color-accent); font-variant-numeric: tabular-nums; }
+  }
+  .svc__title { font-size: var(--text-title); font-weight: var(--weight-strong); margin: 0; }
   .svc__title a { color: var(--color-ink); text-decoration: none; }
-  .svc__title a::after { content: ''; position: absolute; inset: 0; border-radius: var(--radius-lg); }
+  .svc__title a::after { content: ''; position: absolute; inset: 0; }
   .svc__title a:focus-visible { outline: none; }
-  .svc__title a:focus-visible::after { outline: var(--focus-ring); outline-offset: 3px; }
-  .svc p { color: var(--color-muted); font-size: 0.98rem; line-height: 1.6; margin: 0; flex: 1; }
-  .svc__more { display: inline-flex; align-items: center; gap: 0.35rem; margin-top: 0.5rem; font-weight: 600; color: var(--color-cta); }
-  .svc-grid--compact .svc__more { margin-top: 0; font-size: 0; gap: 0; } /* arrow only; the heading carries the name */
-  .svc__more svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; transition: transform 200ms var(--ease); }
-  .svc-grid--compact .svc__more svg { width: 20px; height: 20px; }
-  .svc:hover .svc__more svg { transform: translateX(4px); }
+  .svc__title a:focus-visible::after { outline: 2px solid var(--color-focus); outline-offset: -2px; }
+  .svc:hover .svc__title a { color: var(--color-accent); }
+  .svc p { color: var(--color-muted); max-width: 60ch; }
+
+  .svc-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 16rem), 1fr)); column-gap: var(--gap-columns); border-top: var(--rule-hair) solid var(--color-rule); }
+  .svc-list li { border-bottom: var(--rule-hair) solid var(--color-rule); }
+  .svc-list a { display: flex; align-items: center; min-height: 56px; color: var(--color-ink); text-decoration: none; font-size: var(--text-lg); }
+  .svc-list a:hover { color: var(--color-accent); }
 </style>

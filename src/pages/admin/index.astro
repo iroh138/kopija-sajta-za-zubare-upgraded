@@ -100,26 +100,40 @@ const fmt = (iso: string) => new Date(iso).toLocaleString('sr-Latn-RS', { dateSt
       )}
     </main>
     <style is:global>
-      body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: #0f172a; background: #f8fafc; }
-      .admin { padding: 1.5rem; max-width: 90rem; margin: 0 auto; }
-      h1 { margin: 0 0 1rem; }
-      .filters { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem; }
-      .filters a { padding: 0.4rem 0.8rem; border: 1px solid #94a3b8; border-radius: 999px; color: #0f172a; text-decoration: none; text-transform: capitalize; }
-      .filters a[aria-current='page'] { background: #4b4164; color: #fff; border-color: #4b4164; }
-      .table-wrap { overflow-x: auto; background: #fff; border: 1px solid #cbd5e1; border-radius: 8px; }
+      /* Hallmark · shape: app screen · genre: modern-minimal · theme: brand · redesign: restyle
+       * nav: the filter strip, kept · signature: the requests table, kept · states: new, contacted, booked, closed
+       * axes: light/geometric-sans/chromatic-violet · contrast: pass · v2.0.0 */
+      :root {
+        --a-paper: oklch(98.6% 0.008 300); --a-paper-2: oklch(96.2% 0.018 300); --a-ink: oklch(21% 0.06 300); --a-muted: oklch(46% 0.04 300);
+        --a-rule: oklch(89% 0.02 300); --a-edge: oklch(70% 0.03 300); --a-accent: oklch(50% 0.16 296); --a-accent-ink: oklch(98.6% 0.008 300);
+        --a-focus: oklch(52% 0.2 296); --a-danger: oklch(52% 0.19 27); --a-urgent: oklch(97% 0.03 60); --a-urgent-tag: oklch(93% 0.05 25); --a-urgent-ink: oklch(42% 0.15 27);
+        --a-font: system-ui, sans-serif;
+        --a-1: 4px; --a-2: 8px; --a-3: 12px; --a-4: 16px; --a-6: 24px;
+      }
+      html, body { overflow-x: clip; }
+      body { margin: 0; font: 15px/1.5 var(--a-font); color: var(--a-ink); background: var(--a-paper); }
+      .admin { padding: var(--a-6); max-width: 90rem; margin: 0 auto; }
+      h1 { margin: 0 0 var(--a-4); text-wrap: balance; }
+      .filters { display: flex; flex-wrap: wrap; gap: var(--a-2); margin-bottom: var(--a-4); }
+      .filters a { padding: var(--a-1) var(--a-3); border: 1px solid var(--a-edge); border-radius: 999px; color: var(--a-ink); text-decoration: none; }
+      .filters a[aria-current='page'] { background: var(--a-accent); color: var(--a-accent-ink); border-color: var(--a-accent); }
+      .filters a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--a-focus); outline-offset: 2px; }
+      .table-wrap { overflow-x: auto; background: var(--a-paper); border: 1px solid var(--a-rule); border-radius: var(--a-2); }
       table { border-collapse: collapse; width: 100%; }
-      th, td { text-align: left; vertical-align: top; padding: 0.6rem 0.75rem; border-bottom: 1px solid #e2e8f0; }
-      th { background: #f1f5f9; white-space: nowrap; }
-      tr.st-new td:first-child { box-shadow: inset 4px 0 0 #4b4164; }
-      .muted { color: #475569; }
-      .urgent-tag { margin-left: .5rem; font-size: .75rem; font-weight: 700; padding: .1rem .5rem; border-radius: 999px; background: #fee2e2; color: #991b1b; }
-      tr.urgent td { background: #fff7ed; }
-      form { display: flex; gap: 0.4rem; align-items: center; }
-      form.del { margin-top: .5rem; font-size: .85rem; }
-      button.danger { background: #b42318; }
-      select, button { font: inherit; padding: 0.3rem 0.5rem; }
-      button { background: #4b4164; color: #fff; border: 0; border-radius: 6px; cursor: pointer; }
-      .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+      th, td { text-align: left; vertical-align: top; padding: var(--a-2) var(--a-3); border-bottom: 1px solid var(--a-rule); }
+      th { background: var(--a-paper-2); white-space: nowrap; }
+      tr.st-new td:first-child { box-shadow: inset 4px 0 0 var(--a-accent); }
+      .muted { color: var(--a-muted); }
+      .urgent-tag { margin-left: var(--a-2); font-size: .8125rem; font-weight: 700; padding: 0 var(--a-2); border-radius: 999px; background: var(--a-urgent-tag); color: var(--a-urgent-ink); }
+      tr.urgent td { background: var(--a-urgent); }
+      form { display: flex; gap: var(--a-1); align-items: center; }
+      form.del { margin-top: var(--a-2); font-size: .875rem; }
+      button.danger { background: var(--a-danger); }
+      select, button { font: inherit; padding: var(--a-1) var(--a-2); min-height: 32px; }
+      button { background: var(--a-accent); color: var(--a-accent-ink); border: 0; border-radius: 6px; cursor: pointer; }
+      button:active { transform: translateY(1px); }
+      button:disabled { opacity: 0.55; cursor: not-allowed; }
+      .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
     </style>
     <script>
       document.querySelectorAll('form[data-confirm]').forEach((f) =>

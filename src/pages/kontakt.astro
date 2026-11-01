@@ -17,14 +17,12 @@ const site = Astro.site ?? new URL(Astro.url.origin);
   <section class="section section--compact" aria-label="Brzi kontakt">
     <div class="container">
       <ul class="quick">
-        <li class="panel">
-          <span class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg></span>
+        <li>
           <h2>Zakazivanje</h2>
           <p>Isključivo online. Ordinacija vas kontaktira i potvrđuje termin.</p>
           <a class="text-link" href={url('/zakazivanje')}>Pošaljite zahtev</a>
         </li>
-        <li class="panel">
-          <span class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></span>
+        <li>
           <h2>E-mail</h2>
           <p>Za pitanja koja nisu zakazivanje.</p>
           <a class="text-link" href={`mailto:${practice.email}`}>{practice.email}</a>
@@ -47,11 +45,10 @@ const site = Astro.site ?? new URL(Astro.url.origin);
   )}
 </Base>
 <style>
-  .section--compact { padding-block: var(--space-4); }
-  .quick { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-2); grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); }
-  .quick .panel { display: flex; flex-direction: column; gap: 0.4rem; }
-  .quick h2 { font-size: var(--step-1); font-weight: 500; color: var(--color-ink); margin: 0.5rem 0 0; }
-  .quick p { color: var(--color-muted); margin: 0; flex: 1; }
-  .quick .text-link { overflow-wrap: anywhere; }
-  .icon-chip svg { fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .section--compact { padding-block: var(--space-2xl); }
+  .quick { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--gap-columns); grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr)); border-top: var(--rule-hair) solid var(--color-ink); }
+  .quick li { display: grid; gap: var(--space-xs); padding-top: var(--space-lg); }
+  .quick h2 { font-size: var(--text-title); font-weight: var(--weight-strong); letter-spacing: 0; line-height: 1.2; }
+  .quick p { color: var(--color-muted); }
+  .quick .text-link { overflow-wrap: break-word; }
 </style>

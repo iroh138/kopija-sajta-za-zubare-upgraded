@@ -37,7 +37,7 @@ const primary = [
 ---
 <header class="site-header">
   <div class="container site-header__inner">
-    <a class="brand" href={url('/')}>
+    <a class="brand" href={url('/')} aria-label={`${practice.name}, početna`}>
       <Logo />
     </a>
 
@@ -51,9 +51,9 @@ const primary = [
 
     <div class="site-header__actions">
       {practice.phone && (
-        <a class="btn btn--secondary header-cta" href={`tel:${practice.phone.e164}`} data-nap="phone">Pozovite: {practice.phone.display}</a>
+        <a class="btn btn--secondary header-cta" href={`tel:${practice.phone.e164}`} data-nap="phone">{practice.phone.display}</a>
       )}
-      <a class="btn btn--primary header-cta" href={url('/zakazivanje')}>Zakažite termin online</a>
+      <a class="btn btn--primary header-cta" href={url('/zakazivanje')}>Zakažite termin</a>
       <button class="menu-toggle" type="button" aria-expanded="false" aria-controls="site-menu">
         <span class="visually-hidden">Ceo meni</span>
         <span class="menu-toggle__bars" aria-hidden="true"><span></span><span></span><span></span></span>
@@ -65,7 +65,7 @@ const primary = [
     <div class="container site-menu__grid">
       {groups.map((g) => (
         <div>
-          <p class="site-menu__title">{g.title}</p>
+          <h2 class="site-menu__title">{g.title}</h2>
           <ul>
             {g.links.map((l) => (
               <li><a href={url(l.href)} aria-current={here(l.href) ? 'page' : undefined}>{l.label}</a></li>
@@ -74,7 +74,7 @@ const primary = [
         </div>
       ))}
       <div class="site-menu__contact">
-        <p class="site-menu__title">Zakazivanje</p>
+        <h2 class="site-menu__title">Zakazivanje</h2>
         <p>Termini se zakazuju isključivo online.</p>
         <a class="btn btn--primary" href={url('/zakazivanje')}>Zakažite termin</a>
         <p class="site-menu__mail"><a href={`mailto:${practice.email}`}>{practice.email}</a></p>
@@ -104,38 +104,42 @@ const primary = [
 </script>
 
 <style>
-  .site-header { background: rgb(255 255 255 / 0.94); position: sticky; top: 0; z-index: 50; border-bottom: 1px solid transparent; transition: border-color 200ms ease, box-shadow 200ms ease; }
-  @supports (backdrop-filter: blur(8px)) { .site-header { backdrop-filter: saturate(1.4) blur(10px); } }
-  .site-header.is-scrolled { border-bottom-color: var(--color-divider); box-shadow: 0 6px 20px rgb(30 22 51 / 0.05); }
-  .site-header__inner { display: flex; align-items: center; justify-content: space-between; gap: var(--space-2); min-height: 5rem; }
-  @media (min-width: 900px) { .site-header__inner { min-height: 6.25rem; } }
-
+  /* nav: edge-aligned bar. Wordmark left, four destinations, the one action right; the full list behind a menu under 64rem. */
+  .site-header { position: sticky; top: 0; z-index: var(--z-sticky-nav); background: var(--color-paper); border-bottom: var(--rule-hair) solid transparent; transition: border-color var(--dur-short) var(--ease-out); }
+  .site-header.is-scrolled { border-bottom-color: var(--color-rule); }
+  .site-header__inner { display: flex; align-items: center; gap: var(--space-lg); min-height: var(--header-h); }
+  .brand { display: inline-flex; text-decoration: none; padding-block: var(--space-xs); flex: none; }
+  .brand :global(.logo) { width: auto; height: 52px; }
   .primary-nav { display: none; margin-left: auto; }
-  @media (min-width: 1200px) { .primary-nav { display: block; } }
-  .primary-nav ul { list-style: none; display: flex; gap: 0.25rem; margin: 0; padding: 0; }
-  .primary-nav a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 0.9rem; border-radius: 999px; color: var(--color-ink); text-decoration: none; font-weight: 500; transition: background-color 150ms ease, color 150ms ease; }
-  .primary-nav a:hover { background: var(--color-tint); color: var(--color-accent-strong); }
-  .primary-nav a[aria-current='page'] { color: var(--color-accent-strong); background: var(--color-tint-2); }
-  .brand { text-decoration: none; display: inline-block; padding-block: 0.5rem; }
-  .brand :global(.logo) { width: auto; height: 56px; }
-  @media (min-width: 900px) { .brand :global(.logo) { height: 72px; } }
-  .site-header__actions { display: flex; align-items: center; gap: 1.1rem; }
+  .primary-nav ul { list-style: none; display: flex; gap: var(--space-2xs); margin: 0; padding: 0; }
+  .primary-nav a { display: inline-flex; align-items: center; min-height: 44px; padding-inline: var(--space-sm); border-radius: var(--radius-pill); color: var(--color-ink); text-decoration: none; white-space: nowrap; transition: background-color var(--dur-short) var(--ease-out); }
+  .primary-nav a:hover { background: var(--color-paper-2); color: var(--color-ink); }
+  .primary-nav a[aria-current='page'] { background: var(--color-paper-3); }
+  .site-header__actions { display: flex; align-items: center; gap: var(--space-sm); margin-left: auto; }
   .header-cta { display: none; }
-  @media (min-width: 1024px) { .header-cta { display: inline-flex; } }
 
-  .menu-toggle { width: 48px; height: 48px; display: grid; place-items: center; background: none; border: 0; cursor: pointer; color: var(--color-accent); }
-  .menu-toggle__bars { display: grid; gap: 7px; width: 32px; }
-  .menu-toggle__bars span { display: block; height: 2px; background: currentColor; transition: transform 200ms ease, opacity 200ms ease; }
-  .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(1) { transform: translateY(9px) rotate(45deg); }
+  .menu-toggle { width: 48px; height: 48px; display: grid; place-items: center; background: none; border: 0; border-radius: var(--radius-inner); cursor: pointer; color: var(--color-ink); }
+  .menu-toggle:hover { background: var(--color-paper-2); }
+  .menu-toggle__bars { display: grid; gap: var(--space-xs); width: 28px; }
+  .menu-toggle__bars span { display: block; height: 2px; background: currentColor; transition: transform var(--dur-short) var(--ease-out), opacity var(--dur-short) var(--ease-out); }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(1) { transform: translateY(10px) rotate(45deg); }
   .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(2) { opacity: 0; }
-  .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(3) { transform: translateY(-9px) rotate(-45deg); }
+  .menu-toggle[aria-expanded='true'] .menu-toggle__bars span:nth-child(3) { transform: translateY(-10px) rotate(-45deg); }
 
-  .site-menu { position: absolute; inset: 100% 0 auto 0; background: var(--color-surface); border-top: 1px solid var(--color-divider); box-shadow: 0 24px 40px rgb(30 22 51 / 0.08); max-height: calc(100dvh - 5rem); overflow: auto; }
-  .site-menu__grid { display: grid; gap: var(--space-4); padding-block: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
-  .site-menu__title { font-size: var(--step--1); font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-muted); margin-bottom: var(--space-1); }
+  .site-menu { position: absolute; inset: 100% 0 auto 0; background: var(--color-paper); border-top: var(--rule-hair) solid var(--color-rule); border-bottom: var(--rule-hair) solid var(--color-rule); max-height: calc(100dvh - var(--header-h)); overflow: auto; }
+  .site-menu__grid { display: grid; gap: var(--space-xl); padding-block: var(--space-xl); grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr)); }
+  .site-menu__title { font-size: var(--text-sm); font-weight: 400; letter-spacing: 0; color: var(--color-muted); margin-bottom: var(--space-xs); }
   .site-menu ul { list-style: none; margin: 0; padding: 0; }
-  .site-menu li a { display: inline-flex; align-items: center; min-height: 44px; font-size: 1.3rem; font-weight: 300; color: var(--color-ink); text-decoration: none; }
+  .site-menu li a { display: inline-flex; align-items: center; min-height: 44px; font-size: var(--text-lg); color: var(--color-ink); text-decoration: none; }
   .site-menu li a:hover, .site-menu li a[aria-current='page'] { color: var(--color-accent); }
-  .site-menu__mail { margin-top: var(--space-2); }
+  .site-menu__contact p { margin-bottom: var(--space-md); }
+  .site-menu__mail { margin-top: var(--space-md); }
   .site-menu__mail a { color: var(--color-ink); }
+  /* Wide screens: the links show and the menu button goes; declared last so it wins. */
+  @media (min-width: 64rem) {
+    .primary-nav { display: block; }
+    .site-header__actions { margin-left: 0; }
+    .header-cta { display: inline-flex; }
+    .menu-toggle { display: none; }
+  }
 </style>

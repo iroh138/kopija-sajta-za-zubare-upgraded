@@ -50,7 +50,7 @@ const offer = {
     lead={service.data.summary}
     crumbs={crumbs}
   >
-    <div class="btn-row" style="margin-top: var(--space-2)">
+    <div class="btn-row">
       <a class="btn btn--primary" href={url(`/zakazivanje?usluga=${service.id}`)}>Zakažite termin</a>
     </div>
   </PageHeader>
@@ -98,24 +98,30 @@ const offer = {
     </div>
   </section>
 
-  <section class="section section--tint" aria-labelledby="other-h">
+  <section class="section section--tint others" aria-labelledby="other-h">
     <div class="container">
       <h2 id="other-h">Ostale usluge</h2>
-      <ServiceGrid items={others} numbered={false} compact />
+      <ServiceGrid items={others} compact />
       <a class="btn btn--secondary" href={url('/usluge')}>Pregled svih usluga</a>
     </div>
   </section>
 </Base>
 <style>
-  .detail { display: grid; gap: var(--space-4); }
-  .detail__text :global(p) { font-size: 1.15rem; }
-  .detail h2 { font-size: var(--step-2); }
-  .check-list--2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); column-gap: var(--space-3); }
-  .booking-panel h2 { font-size: var(--step-2); font-weight: 300; color: var(--color-accent); margin-bottom: var(--space-1); }
-  .booking-panel__btn { width: 100%; margin-bottom: var(--space-3); }
-  .booking-panel__facts { margin-bottom: var(--space-3); font-size: 0.98rem; }
-  .booking-panel__sub { font-size: 1rem; font-weight: 600; color: var(--color-ink); margin-bottom: 0.25rem; }
-  .booking-panel :global(.hours-table) { font-size: 0.95rem; max-width: none; }
-  .booking-panel__addr { margin: var(--space-2) 0 0; font-size: 0.95rem; }
+  .detail { display: grid; gap: var(--space-2xl); }
+  .detail__text { font-size: var(--text-lg); line-height: 1.65; }
+  .detail__text :global(h2) { font-size: var(--text-2xl); font-weight: var(--display-weight); margin: var(--space-2xl) 0 var(--space-md); }
+  .detail__text :global(ul) { margin-top: var(--space-md); }
+  .detail__scope h2, .detail__faq h2 { font-size: var(--text-2xl); font-weight: var(--display-weight); margin-bottom: var(--space-lg); }
+  .check-list--2 { grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr)); column-gap: var(--gap-columns); }
+  .booking-panel { display: grid; gap: var(--space-md); }
+  .booking-panel h2 { font-size: var(--text-2xl); font-weight: var(--display-weight); }
+  .booking-panel p { color: var(--color-ink-2); }
+  .booking-panel__btn { width: 100%; }
+  .booking-panel__facts { font-size: var(--text-md); }
+  .booking-panel__sub { font-size: var(--text-md); margin-top: var(--space-xs); }
+  .booking-panel :global(.hours-table) { font-size: var(--text-sm); max-width: none; }
+  .booking-panel__addr { font-size: var(--text-sm); }
   .booking-panel__addr a { color: var(--color-muted); }
+  .others h2 { margin-bottom: var(--space-xl); }
+  .others .btn { margin-top: var(--space-xl); }
 </style>

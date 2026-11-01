@@ -23,8 +23,9 @@ const items = [
   ))}
 </ul>
 <style>
-  .social { list-style: none; display: flex; gap: 1rem; padding: 0; margin: 0; }
-  .social a { width: 62px; height: 62px; border-radius: 50%; display: grid; place-items: center; background: var(--color-tint-2); color: var(--color-accent-strong); transition: background-color 150ms ease; }
-  .social a:hover { background: var(--color-lavender); color: var(--color-ink); }
+  .social { list-style: none; display: flex; gap: var(--space-md); padding: 0; margin: 0; }
+  .social a { width: 48px; height: 48px; border-radius: var(--radius-pill); display: grid; place-items: center; background: var(--color-paper-3); color: var(--color-ink); transition: background-color var(--dur-short) var(--ease-out); }
+  .social a:hover { background: var(--color-paper-2); }
+  .social a:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
   .social svg { width: 24px; height: 24px; }
 </style>

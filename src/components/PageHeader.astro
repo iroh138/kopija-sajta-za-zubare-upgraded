@@ -4,7 +4,7 @@ interface Props { title: string; lead?: string; eyebrow?: string; crumbs?: { nam
 const { title, lead, eyebrow, crumbs = [] } = Astro.props;
 ---
 <div class="page-header">
-  <div class="container">
+  <div class="container page-header__inner">
     {crumbs.length > 0 && (
       <nav aria-label="Putanja">
         <ol class="crumbs">
@@ -14,25 +14,22 @@ const { title, lead, eyebrow, crumbs = [] } = Astro.props;
         </ol>
       </nav>
     )}
-    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
     <h1>{title}</h1>
-    {lead && <p class="lead">{lead}</p>}
+    {(lead || eyebrow) && <p class="lead">{eyebrow && <strong>{eyebrow}. </strong>}{lead}</p>}
     <slot />
   </div>
 </div>
 <style>
-  /* Soft tinted band so inner pages read as a set; title kept short and large. */
-  .page-header {
-    background: var(--color-tint);
-    padding-block: var(--space-4) var(--space-5); border-bottom: 1px solid var(--color-tint-2);
-  }
-  .page-header h1 { font-size: var(--step-3); margin-bottom: var(--space-2); max-width: 22ch; }
-  .page-header :global(.lead) { max-width: 46rem; margin-bottom: 0; }
-  .page-header :global(.btn-row) { margin-top: var(--space-3); }
-  .crumbs { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: 0.35rem; padding: 0; margin: 0 0 var(--space-2); font-size: var(--step--1); }
-  .crumbs li { display: inline-flex; align-items: center; gap: 0.35rem; }
-  .crumbs li + li::before { content: ''; width: 6px; height: 6px; border-right: 1.5px solid var(--color-muted); border-top: 1.5px solid var(--color-muted); transform: rotate(45deg); margin-right: 0.3rem; }
+  /* hero: Banner on inner pages. A band of paper-2, the head at display-s, the first section above the fold. */
+  .page-header { background: var(--color-paper-2); padding-block: var(--space-xl) var(--space-2xl); }
+  .page-header__inner { display: grid; gap: var(--space-md); justify-items: start; }
+  .page-header h1 { font-size: var(--text-display-s); max-width: 22ch; }
+  .page-header .lead { max-width: 56ch; }
+  .page-header :global(.btn-row) { margin-top: var(--space-xs); }
+  .crumbs { list-style: none; display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-xs); padding: 0; margin: 0 0 var(--space-xs); font-size: var(--text-sm); }
+  .crumbs li { display: inline-flex; align-items: center; gap: var(--space-xs); white-space: nowrap; }
+  .crumbs li + li::before { content: '/'; color: var(--color-muted); }
   .crumbs a { color: var(--color-muted); text-decoration: none; display: inline-flex; min-height: 32px; align-items: center; }
-  .crumbs a:hover { color: var(--color-accent-strong); text-decoration: underline; }
-  .crumbs span { color: var(--color-ink); font-weight: 500; }
+  .crumbs a:hover { color: var(--color-accent); text-decoration: underline; }
+  .crumbs span { color: var(--color-ink); }
 </style>

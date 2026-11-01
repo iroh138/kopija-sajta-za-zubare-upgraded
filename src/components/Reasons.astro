@@ -1,25 +1,20 @@
 ---
-/** The practice's reasons (practice.json) as an icon list. Columns adapt to the space the list is given. */
+/** The practice's approach (practice.json reasons) as a definition list parted by hairlines. */
 import { practice } from '../lib/practice';
-interface Props { headingLevel?: 'h3' | 'h4'; min?: string }
-const { headingLevel = 'h3', min = '18rem' } = Astro.props;
-const H = headingLevel;
+interface Props { min?: string; headingLevel?: 'h3' | 'h4' }
+const { min = '16rem' } = Astro.props;
 ---
-<ul class="reasons" style={`--min:${min}`}>
+<dl class="reasons" style={`--min:${min}`}>
   {practice.reasons.map((r) => (
-    <li class="reason">
-      <span class="icon-chip" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></svg></span>
-      <div>
-        <H>{r.title}</H>
-        <p>{r.body}</p>
-      </div>
-    </li>
+    <div class="reason">
+      <dt>{r.title}</dt>
+      <dd>{r.body}</dd>
+    </div>
   ))}
-</ul>
+</dl>
 <style>
-  .reasons { list-style: none; padding: 0; margin: 0 0 var(--space-4); display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min)), 1fr)); }
-  .reason { display: flex; gap: 1rem; align-items: flex-start; }
-  .reason :is(h3, h4) { font-size: var(--step-1); font-weight: 500; color: var(--color-ink); margin: 0 0 0.35rem; }
-  .reason p { font-size: 1rem; line-height: 1.6; color: var(--color-muted); margin: 0; }
-  .icon-chip svg { fill: none; stroke: currentColor; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+  .reasons { margin: 0; display: grid; gap: var(--space-lg) var(--gap-columns); grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--min)), 1fr)); }
+  .reason { border-top: var(--rule-hair) solid var(--color-ink); padding-top: var(--space-md); }
+  .reason dt { font-size: var(--text-title); font-weight: var(--weight-strong); color: var(--color-ink); margin-bottom: var(--space-xs); }
+  .reason dd { margin: 0; color: var(--color-muted); max-width: 40ch; }
 </style>

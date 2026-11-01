@@ -62,17 +62,22 @@ const { label, dots = false, controlsAlign = 'start' } = Astro.props;
 
 <style>
   .carousel__track {
-    list-style: none; margin: 0; padding: 0 0 4px; display: grid; grid-auto-flow: column; gap: var(--carousel-gap, 1.25rem);
+    list-style: none; margin: 0; padding: 0 0 var(--space-2xs); display: grid; grid-auto-flow: column; gap: var(--carousel-gap, var(--space-lg));
     grid-auto-columns: var(--slide-width, 85%); overflow-x: auto; scroll-snap-type: x mandatory; scroll-behavior: smooth;
     scrollbar-width: none; overscroll-behavior-x: contain;
   }
   .carousel__track::-webkit-scrollbar { display: none; }
   .carousel__track > :global(*) { scroll-snap-align: start; }
-  .carousel__controls { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-4); }
+  .carousel__controls { display: flex; align-items: center; gap: var(--space-md); margin-top: var(--space-xl); }
   .carousel__controls--end { justify-content: flex-end; }
   .carousel__controls--split { justify-content: space-between; }
-  .carousel__buttons { display: flex; gap: 1.25rem; }
-  .carousel__dots { display: flex; gap: 8px; }
-  .carousel__dots :global(span) { width: 10px; height: 10px; border-radius: 50%; background: var(--color-tint-2); }
+  .carousel__buttons { display: flex; gap: var(--space-md); }
+  .round-btn { width: 52px; height: 52px; border-radius: var(--radius-pill); border: 1.5px solid var(--color-ink); display: inline-grid; place-items: center; background: var(--color-paper); color: var(--color-ink); cursor: pointer; transition: background-color var(--dur-short) var(--ease-out); }
+  .round-btn:hover:not([disabled]) { background: var(--color-paper-3); }
+  .round-btn:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
+  .round-btn[disabled] { opacity: 0.55; cursor: not-allowed; }
+  .round-btn svg { width: 22px; height: 22px; }
+  .carousel__dots { display: flex; gap: var(--space-xs); }
+  .carousel__dots :global(span) { width: 10px; height: 10px; border-radius: var(--radius-pill); background: var(--color-paper-3); }
   .carousel__dots :global(span.is-active) { background: var(--color-accent); }
 </style>

@@ -243,50 +243,56 @@ const describe = (field: string) => (errors as Record<string, string>)[field] ? 
 </script>
 
 <style>
-  .booking { display: grid; gap: var(--space-4); align-items: start; }
-  @media (min-width: 960px) {
-    .booking { grid-template-columns: 2fr 1fr; } .error-summary { grid-column: 1 / -1; }
-    .booking__aside { position: sticky; top: 8rem; }
+  /* Form: the fields on seven columns beside what happens next. Inputs 52px, one primary action. */
+  .booking { display: grid; gap: var(--space-2xl); align-items: start; }
+  @media (min-width: 64rem) {
+    .booking { grid-template-columns: minmax(0, 8fr) minmax(0, 4fr); gap: var(--space-3xl); } .error-summary { grid-column: 1 / -1; }
+    .booking__aside { position: sticky; top: calc(var(--header-h) + var(--space-lg)); }
   }
-  .form { padding: var(--space-4) var(--space-3); border: 1px solid var(--color-divider); box-shadow: none; }
-  @media (min-width: 640px) { .form { padding: var(--space-4); } }
-  .form__note { color: var(--color-muted); font-size: var(--step--1); margin-bottom: var(--space-3); }
-  .req { color: var(--color-error); font-weight: 600; }
-  .step { display: inline-grid; place-items: center; width: 2rem; height: 2rem; margin-right: 0.75rem; border-radius: 50%; background: var(--color-cta); color: #fff; font-size: 1rem; font-weight: 600; flex: none; }
-  .form > fieldset + fieldset { margin-top: var(--space-4); }
+  .form { padding: var(--space-xl) var(--space-lg); }
+  @media (min-width: 40rem) { .form { padding: var(--space-2xl); } }
+  .form__note { color: var(--color-muted); font-size: var(--text-sm); margin-bottom: var(--space-xl); }
+  .req { color: var(--color-error); font-weight: var(--weight-strong); }
+  .step { display: inline-grid; place-items: center; width: 36px; height: 36px; margin-right: var(--space-sm); border-radius: var(--radius-pill); background: var(--color-ink); color: var(--color-paper); font-size: var(--text-md); font-weight: var(--weight-strong); flex: none; }
+  .form > fieldset + fieldset { margin-top: var(--space-2xl); padding-top: var(--space-2xl); border-top: var(--rule-hair) solid var(--color-rule); }
   .form__submit { width: 100%; }
-  @media (min-width: 640px) { .form__submit { width: auto; min-width: 16rem; } }
-  fieldset { border: 0; padding: 0; margin: 0 0 var(--space-3); min-width: 0; }
-  .form > fieldset > legend { font-size: var(--step-2); font-weight: 300; color: var(--color-accent); margin-bottom: var(--space-3); display: flex; align-items: center; line-height: 1.25; }
-  .field { margin-bottom: var(--space-3); }
-  .field > label, .field > legend { display: block; font-weight: 500; margin-bottom: 0.35rem; color: var(--color-ink); }
-  .field__hint { color: var(--color-muted); margin-bottom: 0.35rem; font-size: var(--step--1); }
-  .field__error { color: var(--color-error); font-weight: 600; margin-bottom: 0.35rem; }
+  @media (min-width: 40rem) { .form__submit { width: auto; min-width: 16rem; } }
+  fieldset { border: 0; padding: 0; margin: 0 0 var(--space-lg); min-width: 0; }
+  .form > fieldset > legend { float: left; width: 100%; font-family: var(--font-display); font-size: var(--text-2xl); font-weight: var(--display-weight); color: var(--color-ink); margin-bottom: var(--space-xl); display: flex; align-items: center; line-height: 1.2; }
+  .form > fieldset > legend + * { clear: left; }
+  .field { margin-bottom: var(--space-lg); }
+  .field > label, .field > legend { display: block; font-weight: var(--weight-strong); margin-bottom: var(--space-xs); color: var(--color-ink); }
+  .field__hint { color: var(--color-muted); margin-bottom: var(--space-xs); font-size: var(--text-sm); }
+  .field__error { color: var(--color-error); font-weight: var(--weight-strong); margin-bottom: var(--space-xs); }
   input[type='text'], input[type='tel'], input[type='email'], select, textarea {
-    width: 100%; min-height: 50px; padding: 0.6rem 0.9rem; font: inherit; color: var(--color-ink);
-    background: #fff; border: 1.5px solid #7a7290; border-radius: var(--radius-sm);
-    transition: border-color 150ms ease, box-shadow 150ms ease;
+    width: 100%; min-height: 52px; padding: var(--space-sm) var(--space-md); font: inherit; color: var(--color-ink);
+    background: var(--color-paper); border: 1.5px solid var(--color-field-edge); border-radius: var(--radius-inner);
+    transition: border-color var(--dur-short) var(--ease-out);
   }
   input[type='text']:hover, input[type='tel']:hover, input[type='email']:hover, select:hover, textarea:hover { border-color: var(--color-ink); }
   input[type='text']:focus-visible, input[type='tel']:focus-visible, input[type='email']:focus-visible, select:focus-visible, textarea:focus-visible {
-    outline: none; border-color: var(--color-cta); box-shadow: 0 0 0 4px rgb(107 75 179 / 0.25);
+    outline: 3px solid var(--color-focus); outline-offset: 1px;
   }
   [aria-invalid='true'] { border-color: var(--color-error) !important; }
-  .choices { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+  .choices { display: flex; flex-wrap: wrap; gap: var(--space-xs); }
   .choices--stack { flex-direction: column; align-items: stretch; }
-  .choices label { display: inline-flex; align-items: center; gap: 0.6rem; min-height: 48px; padding: 0.4rem 1rem 0.4rem 0.8rem; cursor: pointer;
-    border: 1.5px solid var(--color-divider); border-radius: 12px; background: #fff; transition: border-color 150ms ease, background-color 150ms ease; }
-  .choices label:hover { border-color: var(--color-accent); }
-  .choices label:has(input:checked) { border-color: var(--color-cta); background: var(--color-tint); }
-  .choices input { margin-top: 0 !important; }
+  .choices label {
+    display: inline-flex; align-items: center; gap: var(--space-sm); min-height: 48px; padding: var(--space-xs) var(--space-md) var(--space-xs) var(--space-sm); cursor: pointer;
+    border: 1.5px solid var(--color-rule); border-radius: var(--radius-inner); background: var(--color-paper);
+    transition: border-color var(--dur-short) var(--ease-out), background-color var(--dur-short) var(--ease-out);
+  }
+  .choices label:hover { border-color: var(--color-ink); }
+  .choices label:has(input:checked) { border-color: var(--color-accent); background: var(--color-paper-2); }
   /* .field > label sets display:block; the checkbox rows need flex to keep the box beside its text. */
-  .check, .field > label.check { display: flex; align-items: flex-start; gap: 0.75rem; min-height: 44px; cursor: pointer; line-height: 1.5; font-weight: 400; }
-  .urgent { background: #fff7ed; border: 1px solid #fed7aa; border-radius: var(--radius-sm); padding: 0.75rem 1rem; }
-  input[type='radio'], input[type='checkbox'] { width: 1.3rem; height: 1.3rem; accent-color: var(--color-cta); flex: none; margin-top: 0.15rem; }
+  .check, .field > label.check { display: flex; align-items: flex-start; gap: var(--space-sm); min-height: 44px; cursor: pointer; line-height: 1.5; font-weight: 400; }
+  .urgent { background: var(--color-urgent); border: var(--rule-hair) solid var(--color-urgent-edge); border-radius: var(--radius-inner); padding: var(--space-sm) var(--space-md); }
+  input[type='radio'], input[type='checkbox'] { width: 20px; height: 20px; accent-color: var(--color-accent); flex: none; margin: var(--space-3xs) 0 0; }
+  .choices input { margin-top: 0; }
+  input[type='radio']:focus-visible, input[type='checkbox']:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 2px; }
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .error-summary { border: 3px solid var(--color-error); background: #fff; border-radius: var(--radius-sm); padding: var(--space-3); }
-  .error-summary h2 { font-size: var(--step-2); color: var(--color-error); }
-  .error-summary a { color: var(--color-error); font-weight: 600; }
-  .booking__aside ol { padding-left: 1.2rem; }
-  .booking__aside li { margin-bottom: 0.4rem; }
+  .error-summary { border: 3px solid var(--color-error); background: var(--color-paper); border-radius: var(--radius-card); padding: var(--space-lg); }
+  .error-summary h2 { font-size: var(--text-2xl); color: var(--color-error); margin-bottom: var(--space-sm); }
+  .error-summary a { color: var(--color-error); font-weight: var(--weight-strong); }
+  .booking__aside ol { padding-left: var(--space-lg); margin: 0; }
+  .booking__aside li + li { margin-top: var(--space-xs); }
 </style>

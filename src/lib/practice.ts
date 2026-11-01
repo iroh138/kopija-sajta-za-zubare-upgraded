@@ -75,7 +75,7 @@ export function formatTime(t: string): string {
 export function hoursRows() {
   return practice.hours.map((h) => ({
     day: DAY_NAMES[h.day - 1],
-    text: 'closed' in h && h.closed ? 'Ne radimo' : `${(h as any).opens} – ${(h as any).closes}`,
+    text: 'closed' in h && h.closed ? 'Ne radimo' : `${(h as any).opens} do ${(h as any).closes}`,
   }));
 }
 
@@ -88,7 +88,7 @@ export function upcomingSpecialDates(today = new Date()) {
     .map((d) => ({
       ...d,
       pretty: new Date(`${d.date}T12:00:00`).toLocaleDateString('sr-Latn-RS', { weekday: 'long', day: 'numeric', month: 'long' }),
-      text: d.closed ? 'Ne radimo' : `${d.opens} – ${d.closes}`,
+      text: d.closed ? 'Ne radimo' : `${d.opens} do ${d.closes}`,
     }));
 }
 

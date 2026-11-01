@@ -3,10 +3,8 @@ import { url, IS_STATIC_PREVIEW } from '../lib/url';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import LocationBlock from '../components/LocationBlock.astro';
-import Carousel from '../components/Carousel.astro';
 import ServiceGrid from '../components/ServiceGrid.astro';
 import Reasons from '../components/Reasons.astro';
-import CtaBand from '../components/CtaBand.astro';
 import { practice } from '../lib/practice';
 import faq from '../data/faq.json';
 
@@ -23,8 +21,19 @@ const reviews = (await getCollection('testimonials'))
 const gallery = [
   { src: '/images/ordinacija-1.webp', alt: 'Stomatološka stolica i radno mesto u ordinaciji 3A DENT', caption: 'Radno mesto i stomatološka stolica' },
   { src: '/images/ordinacija-2.webp', alt: 'Stomatološka jedinica sa ekranom u ordinaciji', caption: 'Stomatološka jedinica sa ekranom' },
-  { src: '/images/ordinacija-3.webp', alt: 'Uredan prostor sa lavaboom i ormarićima u ordinaciji', caption: 'Uredan i čist radni prostor' },
 ];
+
+// The week as a strip (the page's signature): every day from practice.json, evenings marked.
+const SHORT = ['Pon', 'Uto', 'Sre', 'Čet', 'Pet', 'Sub', 'Ned'];
+const week = practice.hours.map((h: any) => ({
+  day: h.day,
+  short: SHORT[h.day - 1],
+  closed: !!h.closed,
+  opens: h.closed ? '' : h.opens.replace(/:00$/, ''),
+  closes: h.closed ? '' : h.closes.replace(/:00$/, ''),
+  evening: !h.closed && Number(h.closes.slice(0, 2)) >= 20,
+}));
+
 const homeFaq = faq.slice(0, 4);
 const { city } = practice.address;
 ---
@@ -32,153 +41,128 @@ const { city } = practice.address;
   title={`Stomatolog i zubar ${city} | ${practice.name}`}
   description={`Stomatološka ordinacija ${practice.name}, ${practice.address.street}, ${city}. Plombe, lečenje kanala, vađenje zuba i čišćenje kamenca, bez bola. Zakažite online.`}
 >
-  <!-- Hero -->
-  <section class="hero">
-    <div class="hero__text">
-      <h1>Stomatološka ordinacija {practice.name} na Novom Beogradu</h1>
-      <p class="hero__motto">{practice.tagline}</p>
-      <div class="btn-row">
-        <a class="btn btn--primary" href={url('/zakazivanje')}>Zakažite termin online</a>
-        <a class="btn btn--secondary" href={url('/usluge')}>Naše usluge</a>
-      </div>
-      <ul class="hero__trust" aria-label="Ukratko o ordinaciji">
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>{practice.yearsActive} godina iskustva</li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Lokalna anestezija uz gel</li>
-        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>Odrasli i deca</li>
-      </ul>
-      <p class="hero__address">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6-6.2-6-11a6 6 0 0 1 12 0c0 4.8-6 11-6 11z"/><circle cx="12" cy="10" r="2.2"/></svg>
-        <a href={practice.mapsUrl} rel="noopener">{practice.address.street}, {city}</a>
-      </p>
-    </div>
-    <div class="hero__media">
-      <img src={url('/images/hero.webp')} alt={`${doctorName} u ordinaciji ${practice.name}`} width="1600" height="1200" fetchpriority="high" decoding="async" />
-    </div>
-  </section>
-
-  <!-- Intro: arched video left, copy right -->
-  <section class="section" aria-labelledby="intro-h">
-    <div class="container split split--media-left">
-      <div class="arch split__media video-arch">
-        <video id="office-video" poster={url('/images/video-poster.webp')} muted loop playsinline preload="none" width="720" height="880" aria-label="Kratak video šetnje kroz ordinaciju">
-          <source src={url('/video/ordinacija.webm')} type="video/webm" />
-          <source src={url('/video/ordinacija.mp4')} type="video/mp4" />
-        </video>
-        <button type="button" class="video-toggle" data-video-toggle aria-pressed="false">
-          <span class="visually-hidden" data-label>Pusti video</span>
-          <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>
-          <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>
-        </button>
-      </div>
-      <div class="split__body">
-        <p class="eyebrow">O ordinaciji</p>
-        <h2 id="intro-h">Zubar kojeg ćete voleti</h2>
-        <p>{practice.legalName} na Novom Beogradu brine o zubima odraslih i dece već {practice.yearsActive} godina. Radimo <a class="text-link" href={url('/usluge/preventiva-i-dijagnostika')}>preglede i čišćenje</a>, <a class="text-link" href={url('/usluge/lecenje-zuba')}>lečenje zuba</a>, <a class="text-link" href={url('/usluge/endodoncija')}>lečenje kanala</a> i <a class="text-link" href={url('/usluge/oralna-hirurgija')}>vađenje zuba</a>.</p>
-        {lead && <p>Ordinaciju vodi <a class="text-link" href={url('/o-nama')}>{doctorName}</a>, doktor opšte stomatologije sa više od decenije i po iskustva. Najviše se ponosimo time što kod nas i najplašljiviji pacijenti savladaju strah, a mnogi navrate samo da pozdrave doktorku.</p>}
-        <p>Sve intervencije radimo u lokalnoj anesteziji, a pre uboda nanosimo gel, tako da ne boli ni sam ubod.</p>
-        <a class="btn btn--secondary" href={url('/o-nama')}>O ordinaciji</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Services: ruled background, pill links -->
-  <section class="section section--tint" aria-labelledby="services-h">
-    <div class="container">
-      <div class="section-head">
-        <div>
-          <p class="eyebrow">Naše usluge</p>
-          <h2 id="services-h">Kompletna nega zuba na jednom mestu</h2>
+  <!-- Hero: Stage. The head and the booking on the left, the doctor and the week on the right. -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="container hero__grid">
+      <div class="hero__text">
+        <h1 id="hero-h">Stomatolog na Novom Beogradu</h1>
+        <p class="lead">Bez bola, bez straha, bez brige: ordinacija {practice.name}, {practice.address.street}.</p>
+        <div class="btn-row">
+          <a class="btn btn--primary" href={url('/zakazivanje')}>Zakažite termin</a>
+          <a class="btn btn--secondary" href={url('/usluge')}>Pogledajte usluge</a>
         </div>
-        <p>Od prvog pregleda i čišćenja kamenca do lečenja kanala i vađenja zuba. Implante i ortodonciju ne radimo; za te tretmane vas upućujemo proverenim kolegama specijalistima.</p>
       </div>
-      <ServiceGrid items={featured} />
-      <a class="btn btn--secondary" href={url('/usluge')}>Pregled svih usluga</a>
+      <figure class="hero__visual">
+        <img class="hero__photo" src={url('/images/hero.webp')} alt={`${doctorName} u ordinaciji ${practice.name}`} width="1600" height="1200" fetchpriority="high" decoding="async" />
+        <figcaption class="week" aria-label="Radno vreme ove nedelje">
+          <ol class="week__days" data-nap="hours">
+            {week.map((d) => (
+              <li class:list={['week__day', { 'is-closed': d.closed, 'is-evening': d.evening }]} data-day={d.day}>
+                <span class="week__name">{d.short}</span>
+                <span class="week__time">{d.closed ? 'zatvoreno' : `${d.opens} do ${d.closes}`}</span>
+              </li>
+            ))}
+          </ol>
+          <p class="week__note">Ponedeljkom, sredom i petkom radimo do 21 h.</p>
+        </figcaption>
+      </figure>
     </div>
   </section>
 
-  <!-- Office gallery: copy left, photo carousel right -->
-  <section class="section tech" aria-labelledby="office-h">
-    <div class="tech__inner">
-      <div class="tech__text">
+  <!-- The room: the walk-through video set large, two photographs beside it. -->
+  <section class="section room" aria-labelledby="office-h">
+    <div class="container">
+      <div class="section-head section-head--split">
         <h2 id="office-h">Prostor u kom se osećate opušteno</h2>
         <p>Svetla, uredna ordinacija sa savremenom stomatološkom jedinicom. Sve intervencije izvodimo u sterilnim uslovima.</p>
-        <a class="btn btn--secondary" href={url('/kontakt')}>Kako do nas</a>
       </div>
-      <div class="tech__carousel">
-        <Carousel label="Fotografije ordinacije">
-          {gallery.map((g) => (
-            <li class="photo-card">
-              <figure>
-                <img src={url(g.src)} alt={g.alt} width="900" height="900" loading="lazy" decoding="async" />
-                <figcaption>{g.caption}</figcaption>
-              </figure>
-            </li>
-          ))}
-        </Carousel>
+      <div class="room__grid">
+        <div class="room__video">
+          <video id="office-video" poster={url('/images/video-poster.webp')} muted loop playsinline preload="none" width="720" height="880" aria-label="Kratak video šetnje kroz ordinaciju">
+            <source src={url('/video/ordinacija.webm')} type="video/webm" />
+            <source src={url('/video/ordinacija.mp4')} type="video/mp4" />
+          </video>
+          <button type="button" class="video-toggle" data-video-toggle aria-pressed="false">
+            <span class="visually-hidden" data-label>Pusti video</span>
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
+          </button>
+        </div>
+        {gallery.map((g) => (
+          <figure class="room__photo">
+            <img src={url(g.src)} alt={g.alt} width="900" height="900" loading="lazy" decoding="async" />
+            <figcaption>{g.caption}</figcaption>
+          </figure>
+        ))}
+      </div>
+      <p class="room__link"><a class="text-link" href={url('/kontakt')}>Kako do nas</a></p>
+    </div>
+  </section>
+
+  <!-- The services, set as the clinic's menu. -->
+  <section class="section section--tint section--l" aria-labelledby="services-h">
+    <div class="container">
+      <div class="section-head section-head--split">
+        <h2 id="services-h">Kompletna nega zuba na jednom mestu</h2>
+        <p>Implante i ortodonciju ne radimo; za te tretmane vas upućujemo proverenim kolegama specijalistima.</p>
+      </div>
+      <ServiceGrid items={featured} />
+      <div class="services__more">
+        <a class="btn btn--secondary" href={url('/usluge')}>Sve usluge</a>
       </div>
     </div>
   </section>
 
-  <!-- Why us: reasons left, arched portrait right -->
-  <section class="section" aria-labelledby="why-h">
-    <div class="container split split--media-right">
-      <div class="split__body">
-        <h2 id="why-h">Zašto nas pacijenti biraju</h2>
-        <Reasons />
-        <a class="btn btn--secondary" href={url('/o-nama')}>Upoznajte doktorku</a>
-      </div>
+  <!-- The doctor: her portrait beside how the practice works. -->
+  <section class="section section--l" aria-labelledby="intro-h">
+    <div class="container doctor">
       {lead?.data.photo && (
-        <div class="arch split__media split__media--tall">
+        <div class="arch doctor__photo">
           <img src={url(lead.data.photo.src)} alt={lead.data.photo.alt} width={lead.data.photo.width} height={lead.data.photo.height} loading="lazy" decoding="async" />
         </div>
       )}
+      <div class="doctor__body">
+        <h2 id="intro-h">Zubar kojeg ćete voleti</h2>
+        <p class="lead">{lead && <>Ordinaciju vodi <a href={url('/o-nama')}>{doctorName}</a>, doktor opšte stomatologije, već {practice.yearsActive} godina. </>}Kod nas i najplašljiviji pacijenti savladaju strah.</p>
+        <Reasons min="15rem" />
+        <a class="btn btn--secondary" href={url('/o-nama')}>Upoznajte doktorku</a>
+      </div>
     </div>
   </section>
 
-  <!-- Reviews -->
   {reviews.length > 0 && (
-    <section class="section" aria-labelledby="reviews-h">
+    <section class="section section--tint" aria-labelledby="reviews-h">
       <div class="container">
-        <h2 id="reviews-h">Utisci pacijenata</h2>
-        <ul class="review-grid">
-          {reviews.map((t) => (
-            <li class="review">
-              <figure>
-                {t.rating && (
-                  <p class="review__stars" role="img" aria-label={`Ocena ${t.rating} od 5`}>
-                    {Array.from({ length: 5 }, (_, i) => (
-                      <svg viewBox="0 0 24 24" aria-hidden="true" class:list={[{ off: i >= (t.rating ?? 0) }]}><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z"/></svg>
-                    ))}
-                  </p>
-                )}
-                <blockquote><p>{t.body}</p></blockquote>
-                <figcaption>
-                  <strong>{t.author}</strong>
-                  {!t.verbatim && <span class="review__tag">Parafraza – za proveru</span>}
-                </figcaption>
-              </figure>
-            </li>
-          ))}
-        </ul>
+        <h2 id="reviews-h" class="visually-hidden">Utisci pacijenata</h2>
+        {reviews.map((t) => (
+          <figure class="quote">
+            {t.rating && (
+              <p class="quote__stars" role="img" aria-label={`Ocena ${t.rating} od 5`}>
+                {Array.from({ length: 5 }, (_, i) => (
+                  <svg viewBox="0 0 24 24" aria-hidden="true" class:list={[{ off: i >= (t.rating ?? 0) }]}><path d="M12 2.5l2.9 6.1 6.6.8-4.9 4.6 1.3 6.6L12 17.3 6.1 20.6l1.3-6.6L2.5 9.4l6.6-.8z" /></svg>
+                ))}
+              </p>
+            )}
+            <blockquote><p>{t.body}</p></blockquote>
+            <figcaption>
+              {t.author}
+              {!t.verbatim && <span class="quote__tag">Parafraza, za proveru</span>}
+            </figcaption>
+          </figure>
+        ))}
       </div>
     </section>
   )}
 
-  <CtaBand
-    title="Plašite se zubara?"
-    text="Niste jedini, i zato radimo polako, uz lokalnu anesteziju i objašnjenje svakog koraka. Kod nas i najplašljiviji pacijenti prvi put dožive stomatologiju bez neprijatnosti."
-    label="Zakažite prvi pregled"
-  />
-
-  <!-- FAQ teaser + payment -->
+  <!-- Questions: the head on the left, the answers on the right. -->
   <section class="section" aria-labelledby="faq-h">
-    <div class="container split split--top">
-      <div class="split__body">
+    <div class="container faq-split">
+      <div class="faq-split__head">
         <h2 id="faq-h">Pitanja i odgovori</h2>
         <p>{practice.paymentNote}</p>
-        <a class="btn btn--secondary" href={url('/pitanja')}>Sva pitanja</a>
+        <a class="text-link" href={url('/pitanja')}>Sva pitanja</a>
       </div>
-      <div class="faq-list">
+      <div class="faq-group">
         {homeFaq.map((f) => (
           <details class="faq">
             <summary>{f.q}</summary>
@@ -189,14 +173,23 @@ const { city } = practice.address;
     </div>
   </section>
 
-  <section class="section section--tint" aria-label="Lokacija i radno vreme">
+  <!-- The close: what the visitor came to do. Where, when, and the booking. -->
+  <section class="section section--tint section--l" aria-labelledby="cta-h">
     <div class="container">
-      <LocationBlock />
+      <div class="section-head section-head--split">
+        <h2 id="cta-h">Plašite se zubara?</h2>
+        <p>Radimo polako, uz lokalnu anesteziju i objašnjenje svakog koraka. Zakažite prvi pregled.</p>
+      </div>
+      <LocationBlock headingLevel="h3" />
     </div>
   </section>
 </Base>
 
 <script>
+  // Mark today in the week strip (progressive: the strip reads the same without it).
+  const today = ((new Date().getDay() + 6) % 7) + 1;
+  document.querySelector(`.week__day[data-day="${today}"]`)?.classList.add('is-today');
+
   // Video plays only on request or when in view (and never with reduced motion); always pausable.
   const video = document.getElementById('office-video') as HTMLVideoElement | null;
   const btn = document.querySelector<HTMLButtonElement>('[data-video-toggle]');
@@ -223,83 +216,82 @@ const { city } = practice.address;
 </script>
 
 <style>
-  /* Hero */
-  .hero { display: grid; gap: var(--space-4); padding-top: var(--space-3); }
-  .hero__text { padding-inline: 1rem; }
-  .hero__text h1 { margin-bottom: var(--space-3); }
-  .hero__motto { font-size: var(--step-1); font-weight: 300; color: var(--color-ink); margin-bottom: var(--space-4); }
-  .hero__trust { list-style: none; padding: 0; margin: var(--space-4) 0 0; display: flex; flex-wrap: wrap; gap: 0.6rem 1.5rem; color: var(--color-ink); font-weight: 500; }
-  .hero__trust li { display: inline-flex; align-items: center; gap: 0.5rem; }
-  .hero__trust svg, .hero__address svg { width: 20px; height: 20px; flex: none; fill: none; stroke: var(--color-cta); stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
-  .hero__address { display: flex; align-items: center; gap: 0.5rem; margin: var(--space-2) 0 0; }
-  .hero__address a { color: var(--color-muted); }
-  .hero__address a:hover { color: var(--color-accent-strong); }
-  .hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 62% 30%; border-top-left-radius: 50% 45%; border-bottom-left-radius: 50% 45%; aspect-ratio: 4 / 3; }
-  @media (min-width: 1024px) {
-    .hero { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: var(--space-5); padding-top: var(--space-4); }
-    .hero__text { padding-left: var(--edge); padding-right: 0; }
-    .hero__media img { aspect-ratio: auto; min-height: 44rem; border-top-left-radius: 46% 52%; border-bottom-left-radius: 46% 52%; }
+  /* Hero: Stage. Text on five columns, the visual on seven, centred in the screen under the nav. */
+  .hero { padding-block: var(--space-xl) var(--space-2xl); }
+  .hero__grid { display: grid; gap: var(--space-xl); align-items: center; }
+  .hero__text { display: grid; gap: var(--space-lg); justify-items: start; }
+  .hero__text h1 { font-size: var(--text-display); max-width: 12ch; }
+  .hero__text .lead { max-width: 34ch; }
+  .hero__visual { margin: 0; display: grid; gap: 0; }
+  .hero__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 62% 30%; border-radius: var(--radius-card) var(--radius-card) 0 0; }
+  @media (min-width: 64rem) {
+    .hero { min-height: calc(100svh - var(--header-h)); display: grid; align-items: center; padding-block: var(--space-xl); }
+    .hero__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); }
+    .hero__photo { aspect-ratio: auto; height: clamp(22rem, 52svh, 34rem); }
   }
 
-  /* Two-column photo + copy */
-  .split__body p { font-size: 1.1rem; }
-  .split { display: grid; gap: var(--space-4); align-items: center; }
-  .split--top { align-items: start; }
-  .split__media { aspect-ratio: 9 / 11; max-width: 44rem; width: 100%; }
-  .split__media--tall { aspect-ratio: 3 / 4; }
-  .split__body > :last-child { margin-bottom: 0; }
-  @media (min-width: 1024px) {
-    .split { grid-template-columns: 1fr 1fr; gap: clamp(3rem, 10vw, 12rem); }
-    .split--media-right .split__media { justify-self: end; }
+  /* The week strip: the signature. Seven cells, the evenings in the accent, today outlined. */
+  .week { background: var(--color-paper-2); border-radius: 0 0 var(--radius-card) var(--radius-card); padding: var(--space-md); display: grid; gap: var(--space-sm); }
+  .week__days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-2xs); font-variant-numeric: tabular-nums; }
+  .week__day { display: grid; gap: var(--space-3xs); padding: var(--space-xs); border-radius: var(--radius-inner); background: var(--color-paper); text-align: center; }
+  .week__name { font-size: var(--text-sm); color: var(--color-muted); }
+  .week__time { font-size: var(--text-sm); font-weight: var(--weight-strong); color: var(--color-ink); line-height: 1.25; }
+  .week__day.is-evening .week__time { color: var(--color-accent); }
+  .week__day.is-closed { background: transparent; }
+  .week__day.is-closed .week__time { font-weight: 400; color: var(--color-muted); }
+  .week__day.is-today { outline: 2px solid var(--color-ink); outline-offset: -2px; }
+  .week__note { font-size: var(--text-sm); color: var(--color-ink-2); }
+  @media (max-width: 40rem) {
+    .week__days { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .week__day { display: flex; justify-content: space-between; align-items: baseline; text-align: left; padding: var(--space-xs) var(--space-sm); }
   }
 
-  /* Arched video */
-  .video-arch { position: relative; background: var(--color-tint); }
-  .video-arch video { width: 100%; height: 100%; object-fit: cover; display: block; }
+  /* The room: video on eight columns, two photographs stacked on four. */
+  .room__grid { display: grid; gap: var(--gap-columns); }
+  .room__video { position: relative; border-radius: var(--radius-card); overflow: hidden; background: var(--color-paper-3); aspect-ratio: 4 / 5; }
+  .room__video video { width: 100%; height: 100%; object-fit: cover; }
+  .room__photo { margin: 0; display: grid; gap: var(--space-xs); }
+  .room__photo img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; border-radius: var(--radius-card); }
+  .room__photo figcaption { font-size: var(--text-sm); color: var(--color-muted); }
+  .room__link { margin-top: var(--space-xl); }
+  @media (min-width: 60rem) {
+    .room__grid { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); grid-template-rows: auto auto; }
+    .room__video { grid-row: span 2; aspect-ratio: auto; min-height: 36rem; }
+  }
   .video-toggle {
-    position: absolute; right: 1.25rem; bottom: 1.25rem; width: 56px; height: 56px; border-radius: 50%; border: 0; cursor: pointer;
-    display: grid; place-items: center; background: rgb(255 255 255 / 0.92); color: var(--color-ink); box-shadow: var(--shadow);
+    position: absolute; right: var(--space-md); bottom: var(--space-md); width: 48px; height: 48px; border-radius: var(--radius-pill); border: 0; cursor: pointer;
+    display: grid; place-items: center; background: var(--color-paper); color: var(--color-ink);
+    transition: background-color var(--dur-short) var(--ease-out);
   }
-  .video-toggle svg { width: 24px; height: 24px; grid-area: 1 / 1; }
+  .video-toggle:hover { background: var(--color-paper-3); }
+  .video-toggle:focus-visible { outline: 2px solid var(--color-focus); outline-offset: 3px; }
+  .video-toggle svg { width: 24px; height: 24px; grid-area: 1 / 1; fill: currentColor; }
   .video-toggle .icon-pause, .video-toggle[aria-pressed='true'] .icon-play { display: none; }
   .video-toggle[aria-pressed='true'] .icon-pause { display: block; }
 
-  /* Section heading: title left, intro right on wide screens */
-  .section-head { display: grid; gap: var(--space-2); margin-bottom: var(--space-4); }
-  .section-head h2 { margin-bottom: 0; }
-  .section-head p:not(.eyebrow) { color: var(--color-muted); margin: 0; }
-  @media (min-width: 1024px) { .section-head { grid-template-columns: 1.1fr 1fr; align-items: end; gap: var(--space-5); } }
+  .services__more { margin-top: var(--space-xl); }
 
+  /* The doctor: arched portrait on five columns, the approach on seven. */
+  .doctor { display: grid; gap: var(--space-2xl); align-items: center; }
+  .doctor__photo { aspect-ratio: 3 / 4; max-width: 30rem; width: 100%; }
+  .doctor__body { display: grid; gap: var(--space-xl); justify-items: start; }
+  .doctor__body .lead { max-width: 44ch; }
+  .doctor__body :global(.reasons) { width: 100%; margin: 0; }
+  @media (min-width: 60rem) { .doctor { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); } }
 
+  /* One patient's words, set as a statement. */
+  .quote { margin: 0; display: grid; gap: var(--space-xl); }
+  .quote blockquote { margin: 0; }
+  .quote blockquote p { font-family: var(--font-display); font-size: var(--text-section); font-weight: var(--display-weight); line-height: 1.15; letter-spacing: var(--tracking-display); color: var(--color-ink); max-width: 30ch; text-wrap: balance; }
+  .quote figcaption { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-sm); font-weight: var(--weight-strong); }
+  .quote__stars { display: flex; gap: var(--space-3xs); }
+  .quote__stars svg { width: 24px; height: 24px; fill: var(--color-star); }
+  .quote__stars svg.off { fill: var(--color-rule); }
+  .quote__tag { font-size: var(--text-sm); font-weight: 400; padding: var(--space-3xs) var(--space-xs); border-radius: var(--radius-inner); background: var(--color-notice); color: var(--color-notice-ink); }
 
-  /* Office gallery (layout from the reference's technology section) */
-  .tech__inner { display: grid; gap: var(--space-4); }
-  .tech__text { padding-inline: 1rem; }
-  .tech__carousel { padding-left: 1rem; --slide-width: min(85%, 34rem); }
-  @media (min-width: 1024px) {
-    .tech__inner { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: start; }
-    .tech__text { padding-left: var(--edge); padding-right: 0; align-self: center; padding-bottom: 6rem; }
-    .tech__carousel { padding-left: 0; }
-  }
-  .photo-card figure { position: relative; margin: 0; aspect-ratio: 1; overflow: hidden; border-radius: 2px; }
-  .photo-card img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-card figcaption {
-    position: absolute; inset: auto 0 0 0; padding: 3rem 1.5rem 1.25rem; color: #fff; font-size: 1.15rem; font-weight: 400;
-    background: linear-gradient(180deg, rgb(43 34 70 / 0), rgb(43 34 70 / 0.85));
-  }
-
-  /* Why us */
-
-  /* Reviews */
-  .review-grid { list-style: none; padding: 0; margin: var(--space-4) 0 0; display: grid; gap: var(--space-4); grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 36rem)); }
-  .review figure { margin: 0; height: 100%; display: flex; flex-direction: column; background: var(--color-card); border-radius: var(--radius-lg); padding: var(--space-4) var(--space-4) var(--space-3); }
-  .review blockquote { margin: 0; flex: 1; }
-  .review blockquote p { font-size: 1.2rem; line-height: 1.7; color: var(--color-ink); }
-  .review__stars { display: flex; gap: 2px; margin-bottom: var(--space-3); }
-  .review__stars svg { width: 30px; height: 30px; fill: var(--color-star); }
-  .review__stars svg.off { fill: #d9d6e0; }
-  .review figcaption { color: var(--color-ink); }
-  .review__tag { margin-left: 0.6rem; font-size: 0.8rem; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.15rem 0.6rem; border-radius: 999px; background: #fef3c7; color: #78350f; }
-
-
+  /* Questions: head on four columns, answers on eight. */
+  .faq-split { display: grid; gap: var(--space-xl); align-items: start; }
+  .faq-split__head { display: grid; gap: var(--space-md); justify-items: start; }
+  .faq-split__head p { color: var(--color-muted); max-width: 40ch; }
+  @media (min-width: 60rem) { .faq-split { grid-template-columns: minmax(0, 4fr) minmax(0, 8fr); gap: var(--space-3xl); } }
 </style>

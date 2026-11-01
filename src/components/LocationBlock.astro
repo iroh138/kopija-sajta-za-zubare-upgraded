@@ -12,7 +12,7 @@ const H = headingLevel;
     <iframe src={mapEmbedUrl()} title={`Mapa: lokacija ordinacije ${practice.name}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
   </div>
   <div class="location__info">
-    <H>Gde se nalazimo</H>
+    <H class="location__head">Gde se nalazimo</H>
     <address>
       <strong>{practice.legalName}</strong><br />
       <span data-nap="address">{addressLine()}</span><br />
@@ -21,19 +21,23 @@ const H = headingLevel;
       <a href={`mailto:${practice.email}`}>{practice.email}</a>
     </address>
     <p><a href={practice.mapsUrl} rel="noopener">Otvorite u Google mapama</a></p>
-    <h3>Radno vreme</h3>
+    <H class="location__head location__head--sub">Radno vreme</H>
     <HoursTable />
-    {practice.bookingOnly && <p class="muted" style="margin-top: var(--space-2)">Pacijente primamo isključivo uz prethodno zakazivanje.</p>}
-    <div class="btn-row" style="margin-top: var(--space-3)">
+    {practice.bookingOnly && <p class="muted">Pacijente primamo isključivo uz prethodno zakazivanje.</p>}
+    <div class="btn-row">
       <a class="btn btn--primary" href={url('/zakazivanje')}>Zakažite termin online</a>
-      {practice.phone && <a class="btn btn--secondary" href={`tel:${practice.phone.e164}`} data-nap="phone">Pozovite {practice.phone.display}</a>}
+      {practice.phone && <a class="btn btn--secondary" href={`tel:${practice.phone.e164}`} data-nap="phone">{practice.phone.display}</a>}
     </div>
   </div>
 </div>
 <style>
-  .location { display: grid; gap: var(--space-4); align-items: start; }
-  @media (min-width: 900px) { .location { grid-template-columns: 1.1fr 1fr; } }
-  .location__map { border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow); aspect-ratio: 4 / 3; background: var(--color-tint); }
+  .location { display: grid; gap: var(--space-2xl); align-items: start; }
+  @media (min-width: 60rem) { .location { grid-template-columns: minmax(0, 7fr) minmax(0, 5fr); gap: var(--space-3xl); } }
+  .location__map { border-radius: var(--radius-card); overflow: hidden; aspect-ratio: 4 / 3; background: var(--color-paper-3); }
   .location__map iframe { width: 100%; height: 100%; border: 0; display: block; }
-  address { font-style: normal; margin-bottom: var(--space-2); line-height: 1.8; }
+  .location__info { display: grid; gap: var(--space-md); justify-items: start; }
+  .location__head { font-size: var(--text-title); font-weight: var(--weight-strong); letter-spacing: 0; line-height: 1.2; }
+  .location__head--sub { margin-top: var(--space-lg); }
+  address { font-style: normal; line-height: 1.7; }
+  .location__info .btn-row { margin-top: var(--space-md); }
 </style>

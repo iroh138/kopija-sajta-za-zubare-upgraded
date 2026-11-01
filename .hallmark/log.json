@@ -1,0 +1,32 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "site",
+  "shape": "Counter-led booking page",
+  "theme": "brand",
+  "axes": "light/geometric-sans/chromatic-violet",
+  "hero": "Stage",
+  "nav": "edge-aligned bar",
+  "footer": "mast",
+  "imagery": "photographs (the clinic own)",
+  "photos": 0,
+  "entry": "none",
+  "fingerprint": "stage/rows/split/statement/rows/band",
+  "sections": [
+   "hero",
+   "showcase room",
+   "rows services",
+   "split doctor",
+   "statement quote",
+   "rows faq",
+   "band location"
+  ],
+  "signature": "the week of hours as a strip, evenings to 21 h",
+  "waived": [
+   "49b"
+  ],
+  "prompt": "booking page for a general dental practice in Novi Beograd",
+  "date": "2026-11-01"
+ }
+]
