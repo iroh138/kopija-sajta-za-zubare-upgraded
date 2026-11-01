@@ -45,15 +45,15 @@ const { city } = practice.address;
   <section class="hero" aria-labelledby="hero-h">
     <div class="container hero__grid">
       <div class="hero__text">
-        <h1 id="hero-h">Stomatolog na Novom Beogradu</h1>
-        <p class="lead">Bez bola, bez straha, bez brige: ordinacija {practice.name}, {practice.address.street}.</p>
+        <h1 id="hero-h"><span class="hero__line">Zubar bez straha</span> <span class="hero__line">na Novom Beogradu</span></h1>
+        <p class="lead">Sve radimo u anesteziji, uz gel pre uboda. <span class="nowrap">{practice.address.street}</span>.</p>
         <div class="btn-row">
           <a class="btn btn--primary" href={url('/zakazivanje')}>Zakažite termin</a>
           <a class="btn btn--secondary" href={url('/usluge')}>Pogledajte usluge</a>
         </div>
       </div>
       <figure class="hero__visual">
-        <img class="hero__photo" src={url('/images/hero.webp')} alt={`${doctorName} u ordinaciji ${practice.name}`} width="1600" height="1200" fetchpriority="high" decoding="async" />
+        <div class="hero__frame"><img class="hero__photo" src={url('/images/hero.webp')} alt={`${doctorName} u ordinaciji ${practice.name}`} width="1600" height="1200" fetchpriority="high" decoding="async" /></div>
         <figcaption class="week" aria-label="Radno vreme ove nedelje">
           <ol class="week__days" data-nap="hours">
             {week.map((d) => (
@@ -72,11 +72,11 @@ const { city } = practice.address;
   <!-- The room: the walk-through video set large, two photographs beside it. -->
   <section class="section room" aria-labelledby="office-h">
     <div class="container">
-      <div class="section-head section-head--split">
+      <div class="section-head section-head--split" data-reveal>
         <h2 id="office-h">Prostor u kom se osećate opušteno</h2>
         <p>Svetla, uredna ordinacija sa savremenom stomatološkom jedinicom. Sve intervencije izvodimo u sterilnim uslovima.</p>
       </div>
-      <div class="room__grid">
+      <div class="room__grid" data-reveal>
         <div class="room__video">
           <video id="office-video" poster={url('/images/video-poster.webp')} muted loop playsinline preload="none" width="720" height="880" aria-label="Kratak video šetnje kroz ordinaciju">
             <source src={url('/video/ordinacija.webm')} type="video/webm" />
@@ -102,11 +102,11 @@ const { city } = practice.address;
   <!-- The services, set as the clinic's menu. -->
   <section class="section section--tint section--l" aria-labelledby="services-h">
     <div class="container">
-      <div class="section-head section-head--split">
+      <div class="section-head section-head--split" data-reveal>
         <h2 id="services-h">Kompletna nega zuba na jednom mestu</h2>
         <p>Implante i ortodonciju ne radimo; za te tretmane vas upućujemo proverenim kolegama specijalistima.</p>
       </div>
-      <ServiceGrid items={featured} />
+      <div data-reveal><ServiceGrid items={featured} /></div>
       <div class="services__more">
         <a class="btn btn--secondary" href={url('/usluge')}>Sve usluge</a>
       </div>
@@ -121,7 +121,7 @@ const { city } = practice.address;
           <img src={url(lead.data.photo.src)} alt={lead.data.photo.alt} width={lead.data.photo.width} height={lead.data.photo.height} loading="lazy" decoding="async" />
         </div>
       )}
-      <div class="doctor__body">
+      <div class="doctor__body" data-reveal>
         <h2 id="intro-h">Zubar kojeg ćete voleti</h2>
         <p class="lead">{lead && <>Ordinaciju vodi <a href={url('/o-nama')}>{doctorName}</a>, doktor opšte stomatologije, već {practice.yearsActive} godina. </>}Kod nas i najplašljiviji pacijenti savladaju strah.</p>
         <Reasons min="15rem" />
@@ -156,7 +156,7 @@ const { city } = practice.address;
 
   <!-- Questions: the head on the left, the answers on the right. -->
   <section class="section" aria-labelledby="faq-h">
-    <div class="container faq-split">
+    <div class="container faq-split" data-reveal>
       <div class="faq-split__head">
         <h2 id="faq-h">Pitanja i odgovori</h2>
         <p>{practice.paymentNote}</p>
@@ -176,11 +176,11 @@ const { city } = practice.address;
   <!-- The close: what the visitor came to do. Where, when, and the booking. -->
   <section class="section section--tint section--l" aria-labelledby="cta-h">
     <div class="container">
-      <div class="section-head section-head--split">
+      <div class="section-head section-head--split" data-reveal>
         <h2 id="cta-h">Plašite se zubara?</h2>
         <p>Radimo polako, uz lokalnu anesteziju i objašnjenje svakog koraka. Zakažite prvi pregled.</p>
       </div>
-      <LocationBlock headingLevel="h3" />
+      <div data-reveal><LocationBlock headingLevel="h3" /></div>
     </div>
   </section>
 </Base>
@@ -220,20 +220,33 @@ const { city } = practice.address;
   .hero { padding-block: var(--space-xl) var(--space-2xl); }
   .hero__grid { display: grid; gap: var(--space-xl); align-items: center; }
   .hero__text { display: grid; gap: var(--space-lg); justify-items: start; }
-  .hero__text h1 { font-size: var(--text-display); max-width: 12ch; }
+  .hero__text h1 { font-size: clamp(2.75rem, 5.2vw, 5.25rem); max-width: none; line-height: 1.02; }
+  .hero__line, .nowrap { display: inline-block; }
   .hero__text .lead { max-width: 34ch; }
+  /* The photograph takes the brand's arch on its leading corner; the week card overlaps its foot (depth by layering). */
   .hero__visual { margin: 0; display: grid; gap: 0; }
-  .hero__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 62% 30%; border-radius: var(--radius-card) var(--radius-card) 0 0; }
+  .hero__frame { overflow: hidden; border-radius: var(--radius-arch) var(--radius-card) var(--radius-card) var(--radius-card); }
+  .hero__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 62% 30%; }
+  .hero__visual .week { position: relative; z-index: var(--z-raised); margin: calc(-1 * var(--space-2xl)) var(--space-md) 0; border-color: transparent; box-shadow: var(--shadow-lift); }
+
+  /* Entrance: one settle, 0.8s in all. Self-running CSS, so the hero is never blank without JS; reduced motion shows the end state. */
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+  @keyframes settle { from { transform: scale(1.05); } to { transform: none; } }
+  .hero__text > *, .hero__visual .week { animation: rise var(--dur-entrance) var(--ease-out) both; }
+  .hero__text > :nth-child(2) { animation-delay: 60ms; }
+  .hero__text > :nth-child(3) { animation-delay: 120ms; }
+  .hero__visual .week { animation-delay: 180ms; }
+  .hero__photo { animation: settle var(--dur-entrance) var(--ease-out) both; }
   @media (min-width: 64rem) {
     .hero { min-height: calc(100svh - var(--header-h)); display: grid; align-items: center; padding-block: var(--space-xl); }
-    .hero__grid { grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: var(--space-3xl); }
-    .hero__photo { aspect-ratio: auto; height: clamp(22rem, 52svh, 34rem); }
+    .hero__grid { grid-template-columns: minmax(0, 6fr) minmax(0, 6fr); gap: var(--space-2xl); }
+    .hero__photo { aspect-ratio: auto; height: clamp(22rem, 56svh, 38rem); }
   }
 
   /* The week strip: the signature. Seven cells, the evenings in the accent, today outlined. */
-  .week { background: var(--color-paper-2); border-radius: 0 0 var(--radius-card) var(--radius-card); padding: var(--space-md); display: grid; gap: var(--space-sm); }
+  .week { background: var(--color-paper); border: var(--rule-hair) solid var(--color-rule); border-radius: var(--radius-card); padding: var(--space-md); display: grid; gap: var(--space-sm); }
   .week__days { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: var(--space-2xs); font-variant-numeric: tabular-nums; }
-  .week__day { display: grid; gap: var(--space-3xs); padding: var(--space-xs); border-radius: var(--radius-inner); background: var(--color-paper); text-align: center; }
+  .week__day { display: grid; gap: var(--space-3xs); padding: var(--space-xs); border-radius: var(--radius-inner); background: var(--color-paper-2); text-align: center; }
   .week__name { font-size: var(--text-sm); color: var(--color-muted); }
   .week__time { font-size: var(--text-sm); font-weight: var(--weight-strong); color: var(--color-ink); line-height: 1.25; }
   .week__day.is-evening .week__time { color: var(--color-accent); }

@@ -17,5 +17,6 @@
   --font-display: "Jost", ui-sans-serif, system-ui, sans-serif; --font-body: "Jost", ui-sans-serif, system-ui, sans-serif; --font-outlier: var(--font-body);
   --radius-card: 20px; --radius-inner: 12px; --radius-pill: 999px; --rule-hair: 1px; --shadow-card: 0 1px 2px oklch(20% 0.04 300 / 0.06);
   --display-weight: 300; --weight-strong: 600; --header-h: 80px;
+  --radius-arch: 160px; --dur-entrance: 640ms; --shadow-lift: 0 12px 32px -12px oklch(21% 0.06 300 / 0.18);
   --tracking-display: -0.02em;
 }

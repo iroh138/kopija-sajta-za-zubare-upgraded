@@ -8,7 +8,7 @@
 /* Hallmark · dropped the office carousel and ordinacija-3.webp · two photographs beside the video carry the room; the third was a near duplicate */
 /* Hallmark · dropped the h3 service names under Ostale usluge (Preventiva i dijagnostika, Lečenje zuba, Oralna hirurgija, Osnovna protetika, Lečenje desni and the rest) · now a plain list of links, same names and addresses */
 /* Hallmark · dropped #why-h "Zašto nas pacijenti biraju" and its h3s (Bez bola, Bez straha, Bez brige, I za najmlađe) · merged into the doctor section as a definition list, same words */
-/* Hallmark · reworded "Stomatološka ordinacija 3A DENT na Novom Beogradu" to "Stomatolog na Novom Beogradu" · the hero head runs seven words at most; the name moves to the lead */
+/* Hallmark · reworded "Stomatološka ordinacija 3A DENT na Novom Beogradu" to "Zubar bez straha na Novom Beogradu" · the hero head runs seven words at most and carries the practice's promise; the name is in the logo and the title */
 /* Hallmark · reworded "Adresa:", "Radno vreme:", "Kontakt:" to the same words without the colon · footer labels; and the inner-page eyebrows became a bold lead-in · 54 names the eyebrow */
 @import '@fontsource/jost/300.css';
 @import '@fontsource/jost/400.css';
@@ -110,6 +110,10 @@ html { scroll-padding-top: calc(var(--header-h) + var(--space-lg)); scroll-paddi
   content: ''; position: absolute; left: 7px; top: calc(0.15em + 5px); width: 6px; height: 10px;
   border: solid var(--color-accent); border-width: 0 2px 2px 0; transform: rotate(45deg);
 }
+
+/* The page's one reveal: visible by default; only under .js does a block wait to rise in. */
+.js [data-reveal] { opacity: 0; transform: translateY(24px); transition: opacity var(--dur-entrance) var(--ease-out), transform var(--dur-entrance) var(--ease-out); }
+.js [data-reveal].is-in { opacity: 1; transform: none; }
 
 /* Two columns: the main text and a side panel that stays in view on wide screens. */
 .with-aside { display: grid; gap: var(--space-2xl); align-items: start; }

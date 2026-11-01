@@ -36,6 +36,7 @@ const blocks = [practiceJsonLd(site, { services: serviceLinks, staff: staffLinks
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script is:inline>if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('js');</script>
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -68,6 +69,14 @@ const blocks = [practiceJsonLd(site, { services: serviceLinks, staff: staffLinks
     <Footer />
     <MobileBar />
     <ConsentBanner />
+    <script>
+      // One reveal per page: blocks marked data-reveal rise into place once, as they enter the viewport.
+      // Hidden only under .js (set in <head> when IntersectionObserver exists and motion is allowed).
+      const io = 'IntersectionObserver' in window ? new IntersectionObserver((entries) => {
+        for (const e of entries) if (e.isIntersecting) { e.target.classList.add('is-in'); io?.unobserve(e.target); }
+      }, { rootMargin: '0px 0px -10% 0px' }) : null;
+      document.querySelectorAll('[data-reveal]').forEach((el) => io?.observe(el));
+    </script>
   </body>
 </html>
 <style is:global>
