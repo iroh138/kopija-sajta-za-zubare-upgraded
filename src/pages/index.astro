@@ -53,7 +53,17 @@ const { city } = practice.address;
         </div>
       </div>
       <figure class="hero__visual">
-        <div class="hero__frame"><img class="hero__photo" src={url('/images/hero.webp')} alt={`${doctorName} u ordinaciji ${practice.name}`} width="1600" height="1200" fetchpriority="high" decoding="async" /></div>
+        <div class="hero__frame">
+          <video class="hero__photo" id="hero-video" muted loop playsinline preload="metadata" width="1000" height="800"
+                 poster={url('/images/hero-loop-poster.webp')} aria-label={`${doctorName} u ordinaciji ${practice.name}, pa kratak prolaz kroz ordinaciju`}>
+            <source src={url('/video/hero-loop.mp4')} type="video/mp4" />
+          </video>
+          <button type="button" class="video-toggle hero__toggle" data-hero-toggle aria-pressed="false">
+            <span class="visually-hidden" data-label>Pusti video</span>
+            <svg class="icon-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+            <svg class="icon-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" /></svg>
+          </button>
+        </div>
         <figcaption class="week" aria-label="Radno vreme ove nedelje">
           <ol class="week__days" data-nap="hours">
             {week.map((d) => (
@@ -186,6 +196,22 @@ const { city } = practice.address;
 </Base>
 
 <script>
+  // Hero loop: plays only when motion is allowed and the hero is on screen; the button always pauses it.
+  // Without JS or with reduced motion the poster (the doctor) stays.
+  {
+    const hv = document.getElementById('hero-video') as HTMLVideoElement | null;
+    const hb = document.querySelector<HTMLButtonElement>('[data-hero-toggle]');
+    const hl = hb?.querySelector('[data-label]');
+    const still = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let paused = still;
+    const show = () => { const on = !!hv && !hv.paused; hb?.setAttribute('aria-pressed', String(on)); if (hl) hl.textContent = on ? 'Pauziraj video' : 'Pusti video'; };
+    hv?.addEventListener('play', show); hv?.addEventListener('pause', show);
+    hb?.addEventListener('click', () => { if (!hv) return; if (hv.paused) { paused = false; hv.play().catch(() => {}); } else { paused = true; hv.pause(); } });
+    if (hv && 'IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => { if (e.isIntersecting && !paused) hv.play().catch(() => {}); else if (!e.isIntersecting) hv.pause(); }, { threshold: 0.25 }).observe(hv);
+    }
+  }
+
   // Mark today in the week strip (progressive: the strip reads the same without it).
   const today = ((new Date().getDay() + 6) % 7) + 1;
   document.querySelector(`.week__day[data-day="${today}"]`)?.classList.add('is-today');
@@ -225,8 +251,9 @@ const { city } = practice.address;
   .hero__text .lead { max-width: 34ch; }
   /* The photograph takes the brand's arch on its leading corner; the week card overlaps its foot (depth by layering). */
   .hero__visual { margin: 0; display: grid; gap: 0; }
-  .hero__frame { overflow: hidden; border-radius: var(--radius-arch) var(--radius-card) var(--radius-card) var(--radius-card); }
-  .hero__photo { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: 62% 30%; }
+  .hero__frame { position: relative; overflow: hidden; border-radius: var(--radius-arch) var(--radius-card) var(--radius-card) var(--radius-card); }
+  .hero__photo { display: block; width: 100%; aspect-ratio: 5 / 4; object-fit: cover; object-position: 50% 30%; background: var(--color-paper-3); }
+  .hero__toggle { top: var(--space-md); bottom: auto; }
   .hero__visual .week { position: relative; z-index: var(--z-raised); margin: calc(-1 * var(--space-2xl)) var(--space-md) 0; border-color: transparent; box-shadow: var(--shadow-lift); }
 
   /* Entrance: one settle, 0.8s in all. Self-running CSS, so the hero is never blank without JS; reduced motion shows the end state. */

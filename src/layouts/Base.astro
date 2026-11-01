@@ -40,6 +40,7 @@ const blocks = [practiceJsonLd(site, { services: serviceLinks, staff: staffLinks
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {(Astro.url.pathname.replace(/\/$/, '') || '/') === (url('/').replace(/\/$/, '') || '/') && <link rel="preload" href={url('/images/hero-loop-poster.webp')} as="image" fetchpriority="high" />}
     <link rel="preload" href={jost300} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={jost400} as="font" type="font/woff2" crossorigin />
     <link rel="preload" href={jost300ext} as="font" type="font/woff2" crossorigin />
